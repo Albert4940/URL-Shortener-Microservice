@@ -13,6 +13,19 @@ mongoose.connect(process.env.MONGO_URI, {
     useUnifiedTopology: true
 });
 
+const urlSchema = new mongoose.Schema({
+    original_url:{
+        type:String,
+        required:true
+    },
+    short_url:{
+        type: Number,
+        required: false
+    }
+})
+
+const Url = mongoose.model('Url',urlSchema);
+
 app.use(bodyParser.urlencoded({exetended:false}));
 
 app.use(express.static(path.join(__dirname, 'public')));
