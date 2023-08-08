@@ -50,8 +50,16 @@ const findOneUrl = async url=> {
 }
 
 const findOneShortUrl = async shortUrl => {
-  
+  let response = {};
+
+  try{
+    response = await Url.findOne({short_url: shortUrl});
+  }catch(err){
+    response = err;
+  }
+  return response;
 }
+
 const createAndSaveUrl = async url => {
     //
     const urls = await findAllUrl();
@@ -129,8 +137,10 @@ app.post('/api/shorturl', async (req, res) => {
 })
 
 app.get('/api/shorturl/:short_url',  async (req, res) => {
-  console.log(req.params.short_url)
-  res.json({"ok":"ok"})
+  const shortUrl = req.params.short_url;
+  const {original_url} = await findOneShortUrl(shortUrl);
+
+  res.redirect(original_url);
 });
 
 app.listen(port, function(){
