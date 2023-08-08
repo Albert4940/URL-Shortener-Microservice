@@ -9,8 +9,9 @@ const {URL} = require('url');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(MONGO_URI, {
     useNewUrlParser: true, 
     useUnifiedTopology: true
 }).then(() => {
@@ -38,15 +39,6 @@ const findAllUrl = async () => {
    return response;
 }
 
-const isExist = (urls,urlSubmitted) => {
-  const newUrls = [...urls];
-  if(newUrls.length == 0)
-    return false;
-
-  return newUrls.find(url => url.original_url === urlSubmitted) == undefined ? false : true;
-
-}
-
 const findOneUrl = async url=> {
   let response = {};
   try{
@@ -57,6 +49,9 @@ const findOneUrl = async url=> {
   return response;
 }
 
+const findOneShortUrl = async shortUrl => {
+  
+}
 const createAndSaveUrl = async url => {
     //
     const urls = await findAllUrl();
@@ -76,8 +71,7 @@ const createAndSaveUrl = async url => {
         response = await urlModel.save();
     }catch(err){
         response = err;
-    }
-    
+    }    
     return response;
 
 }
@@ -133,6 +127,11 @@ app.post('/api/shorturl', async (req, res) => {
   //  console.log(reponse)
     res.json(response);
 })
+
+app.get('/api/shorturl/:short_url',  async (req, res) => {
+  console.log(req.params.short_url)
+  res.json({"ok":"ok"})
+});
 
 app.listen(port, function(){
     console.log(`Listening on port ${port}`);
